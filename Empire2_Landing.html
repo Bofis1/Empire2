@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EMPIRE II: THE RISE OF XU</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --green:#39ff8a;
+  --green-dim:#1a6638;
+  --green-glow:rgba(57,255,138,.12);
+  --red:#ff2040;
+  --cyan:#00ccff;
+  --gold:#c8a830;
+  --bg:#030a04;
+  --bg2:#060f06;
+  --text:#b8d4b0;
+  --mono:'Share Tech Mono',monospace;
+  --display:'Bebas Neue',sans-serif;
+  --body:'Rajdhani',sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--body);overflow-x:hidden}
+
+/* ── SCANLINE OVERLAY ── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.08) 2px,rgba(0,0,0,.08) 4px);
+}
+
+/* ── NOISE GRAIN ── */
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9998;opacity:.03;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:128px 128px;
+}
+
+/* ── LANDING PAGE ── */
+#landing{
+  min-height:100vh;display:flex;flex-direction:column;
+  position:relative;overflow:hidden;
+}
+
+/* Animated grid background */
+#landing::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(57,255,138,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(57,255,138,.03) 1px, transparent 1px);
+  background-size:60px 60px;
+  animation:gridDrift 40s linear infinite;
+}
+@keyframes gridDrift{to{background-position:60px 60px}}
+
+/* Radial vignette */
+#landing::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 80% 60% at 50% 40%, transparent 30%, rgba(3,10,4,.85) 100%);
+}
+
+/* ── NAV ── */
+nav{
+  position:relative;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:20px 48px;
+  border-bottom:1px solid rgba(57,255,138,.1);
+  background:rgba(3,10,4,.6);backdrop-filter:blur(8px);
+}
+.nav-logo{
+  font-family:var(--display);font-size:28px;letter-spacing:.2em;color:var(--green);
+  text-shadow:0 0 20px rgba(57,255,138,.5);
+}
+.nav-logo span{color:var(--text);opacity:.5}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-links a{
+  font-family:var(--mono);font-size:11px;letter-spacing:.18em;
+  color:rgba(184,212,176,.5);text-decoration:none;text-transform:uppercase;
+  transition:color .2s;
+}
+.nav-links a:hover{color:var(--green)}
+.nav-badge{
+  font-family:var(--mono);font-size:9px;letter-spacing:.14em;
+  background:rgba(57,255,138,.08);border:1px solid rgba(57,255,138,.2);
+  color:var(--green);padding:4px 10px;
+}
+
+/* ── HERO ── */
+.hero{
+  position:relative;z-index:10;
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:80px 48px 60px;text-align:center;
+}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:10px;letter-spacing:.28em;
+  color:var(--green);opacity:.7;margin-bottom:20px;
+  animation:fadeUp .8s ease both;
+}
+.hero-title{
+  font-family:var(--display);font-size:clamp(72px,12vw,160px);
+  line-height:.9;letter-spacing:.04em;
+  color:#fff;text-shadow:0 0 60px rgba(57,255,138,.2),0 0 120px rgba(57,255,138,.08);
+  animation:fadeUp .8s .1s ease both;
+  margin-bottom:8px;
+}
+.hero-title .xu{
+  color:var(--green);
+  text-shadow:0 0 40px rgba(57,255,138,.6),0 0 80px rgba(57,255,138,.3);
+  display:block;
+}
+.hero-sub{
+  font-family:var(--display);font-size:clamp(18px,3vw,32px);
+  letter-spacing:.25em;color:var(--gold);opacity:.85;
+  animation:fadeUp .8s .2s ease both;
+  margin-bottom:36px;
+}
+.hero-lore{
+  font-family:var(--body);font-size:clamp(14px,1.4vw,17px);font-weight:300;
+  max-width:560px;line-height:1.8;color:rgba(184,212,176,.6);
+  letter-spacing:.04em;
+  animation:fadeUp .8s .3s ease both;
+  margin-bottom:52px;
+}
+.hero-lore em{color:var(--green);font-style:normal;opacity:.9}
+
+/* ── CTA BUTTON ── */
+.cta-wrap{
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+  animation:fadeUp .8s .4s ease both;
+}
+.cta{
+  position:relative;display:inline-flex;align-items:center;gap:14px;
+  padding:18px 52px;
+  background:transparent;border:2px solid var(--green);
+  color:var(--green);font-family:var(--display);font-size:28px;letter-spacing:.25em;
+  cursor:pointer;text-transform:uppercase;
+  clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));
+  transition:all .2s;overflow:hidden;
+}
+.cta::before{
+  content:'';position:absolute;inset:0;
+  background:var(--green);transform:translateX(-102%);transition:transform .3s ease;
+}
+.cta:hover::before{transform:translateX(0)}
+.cta:hover{color:#030a04}
+.cta span{position:relative;z-index:1}
+.cta-arrow{position:relative;z-index:1;font-size:20px;transition:transform .2s}
+.cta:hover .cta-arrow{transform:translateX(6px)}
+.cta-note{
+  font-family:var(--mono);font-size:9px;letter-spacing:.16em;
+  color:rgba(57,255,138,.35);
+}
+
+/* ── STAT STRIP ── */
+.stats{
+  position:relative;z-index:10;
+  display:flex;align-items:stretch;
+  border-top:1px solid rgba(57,255,138,.08);
+  border-bottom:1px solid rgba(57,255,138,.08);
+  background:rgba(3,10,4,.7);
+  animation:fadeUp .8s .5s ease both;
+}
+.stat{
+  flex:1;padding:24px 0;text-align:center;
+  border-right:1px solid rgba(57,255,138,.06);
+  position:relative;overflow:hidden;transition:background .2s;
+}
+.stat:last-child{border-right:none}
+.stat:hover{background:var(--green-glow)}
+.stat-n{
+  font-family:var(--display);font-size:clamp(28px,4vw,44px);
+  color:var(--green);letter-spacing:.06em;line-height:1;
+  text-shadow:0 0 20px rgba(57,255,138,.4);
+}
+.stat-l{
+  font-family:var(--mono);font-size:9px;letter-spacing:.18em;
+  color:rgba(184,212,176,.4);margin-top:4px;text-transform:uppercase;
+}
+
+/* ── FEATURES ── */
+.features{
+  position:relative;z-index:10;
+  padding:80px 48px;
+  background:linear-gradient(180deg, var(--bg) 0%, var(--bg2) 100%);
+}
+.features-hdr{
+  text-align:center;margin-bottom:64px;
+}
+.features-hdr h2{
+  font-family:var(--display);font-size:clamp(36px,5vw,56px);
+  letter-spacing:.18em;color:#fff;
+}
+.features-hdr p{
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  color:rgba(57,255,138,.5);margin-top:8px;
+}
+.features-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:2px;max-width:1200px;margin:0 auto;
+}
+.feat{
+  padding:32px 28px;background:rgba(6,15,6,.8);
+  border:1px solid rgba(57,255,138,.06);
+  transition:border-color .2s, background .2s;
+  position:relative;overflow:hidden;
+}
+.feat::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--green),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.feat:hover{border-color:rgba(57,255,138,.18);background:rgba(10,22,10,.9)}
+.feat:hover::before{opacity:1}
+.feat-icon{
+  font-size:22px;margin-bottom:14px;display:block;
+}
+.feat-title{
+  font-family:var(--display);font-size:22px;letter-spacing:.12em;
+  color:#e8f5e0;margin-bottom:8px;
+}
+.feat-desc{
+  font-family:var(--body);font-size:14px;font-weight:300;
+  line-height:1.7;color:rgba(184,212,176,.55);letter-spacing:.02em;
+}
+.feat-desc strong{color:var(--green);font-weight:600}
+
+/* ── ZONES TABLE ── */
+.zones{
+  position:relative;z-index:10;
+  padding:80px 48px;
+  background:var(--bg);
+}
+.zones-hdr{
+  text-align:center;margin-bottom:48px;
+}
+.zones-hdr h2{
+  font-family:var(--display);font-size:clamp(32px,5vw,52px);
+  letter-spacing:.18em;color:#fff;
+}
+.zones-hdr p{
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;
+  color:rgba(57,255,138,.5);margin-top:8px;
+}
+.zones-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+  gap:1px;max-width:1200px;margin:0 auto;
+  border:1px solid rgba(57,255,138,.06);
+}
+.zone-card{
+  padding:20px 18px;background:rgba(6,15,6,.9);
+  border-right:1px solid rgba(57,255,138,.04);
+  border-bottom:1px solid rgba(57,255,138,.04);
+  transition:background .2s;cursor:default;
+  position:relative;
+}
+.zone-card:hover{background:rgba(10,22,10,.95)}
+.zone-tier{
+  font-family:var(--mono);font-size:8px;letter-spacing:.2em;
+  margin-bottom:6px;
+}
+.zone-name{
+  font-family:var(--display);font-size:17px;letter-spacing:.1em;
+  color:#e8f5e0;margin-bottom:4px;
+}
+.zone-boss{
+  font-family:var(--mono);font-size:9px;letter-spacing:.1em;
+  color:rgba(200,168,48,.6);
+}
+.zone-boss::before{content:'▶ '}
+.zone-lv{
+  position:absolute;top:16px;right:14px;
+  font-family:var(--mono);font-size:9px;letter-spacing:.1em;
+  color:rgba(184,212,176,.3);
+}
+
+/* Tier colour coding */
+.t-hub{color:#39ff8a}
+.t-safe{color:#39ff8a}
+.t-combat{color:rgba(200,168,48,.8)}
+.t-dungeon{color:#ff6600}
+.t-raid{color:#ff2040}
+.t-undead{color:#9966cc}
+
+/* ── MP SECTION ── */
+.mp-section{
+  position:relative;z-index:10;
+  padding:80px 48px;
+  background:linear-gradient(180deg, var(--bg2) 0%, #020808 100%);
+  text-align:center;
+}
+.mp-section h2{
+  font-family:var(--display);font-size:clamp(32px,5vw,52px);
+  letter-spacing:.18em;color:var(--cyan);
+  text-shadow:0 0 30px rgba(0,204,255,.3);
+  margin-bottom:12px;
+}
+.mp-section p{
+  font-family:var(--body);font-size:16px;font-weight:300;
+  max-width:560px;margin:0 auto 48px;line-height:1.8;
+  color:rgba(184,212,176,.55);
+}
+.mp-steps{
+  display:flex;align-items:center;justify-content:center;
+  gap:0;max-width:800px;margin:0 auto;flex-wrap:wrap;
+}
+.mp-step{
+  flex:1;min-width:160px;padding:28px 20px;
+  background:rgba(0,204,255,.04);border:1px solid rgba(0,204,255,.1);
+  position:relative;
+}
+.mp-step-n{
+  font-family:var(--display);font-size:48px;
+  color:rgba(0,204,255,.15);line-height:1;margin-bottom:8px;
+}
+.mp-step-t{
+  font-family:var(--display);font-size:18px;letter-spacing:.12em;
+  color:var(--cyan);margin-bottom:6px;
+}
+.mp-step-d{
+  font-family:var(--mono);font-size:10px;letter-spacing:.1em;
+  color:rgba(0,204,255,.5);line-height:1.6;
+}
+.mp-arrow{
+  font-family:var(--mono);font-size:20px;color:rgba(0,204,255,.25);
+  padding:0 8px;
+}
+
+/* ── FINAL CTA ── */
+.final-cta{
+  position:relative;z-index:10;
+  padding:100px 48px;text-align:center;
+  background:var(--bg);
+  border-top:1px solid rgba(57,255,138,.08);
+}
+.final-cta h2{
+  font-family:var(--display);font-size:clamp(40px,7vw,80px);
+  letter-spacing:.12em;color:#fff;margin-bottom:16px;
+}
+.final-cta p{
+  font-family:var(--mono);font-size:10px;letter-spacing:.22em;
+  color:rgba(57,255,138,.4);margin-bottom:48px;
+}
+.final-cta .cta{font-size:32px;padding:22px 64px}
+
+/* ── FOOTER ── */
+footer{
+  position:relative;z-index:10;
+  padding:24px 48px;
+  border-top:1px solid rgba(57,255,138,.06);
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(3,10,4,.9);
+}
+.footer-l{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:rgba(57,255,138,.3)}
+.footer-r{font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:rgba(184,212,176,.2)}
+
+/* ── GAME OVERLAY ── */
+#game-overlay{
+  display:none;position:fixed;inset:0;z-index:10000;
+  background:var(--bg);flex-direction:column;
+}
+#game-overlay.active{display:flex}
+#game-frame-wrap{
+  flex:1;position:relative;overflow:hidden;
+}
+#game-frame{
+  width:100%;height:100%;border:none;display:block;
+}
+#game-bar{
+  height:36px;background:rgba(3,10,4,.95);
+  border-bottom:1px solid rgba(57,255,138,.12);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 16px;flex-shrink:0;
+}
+.game-bar-logo{
+  font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--green);opacity:.6;
+}
+#game-close{
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;
+  background:transparent;border:1px solid rgba(255,32,64,.25);
+  color:rgba(255,32,64,.6);padding:4px 14px;cursor:pointer;
+  transition:all .2s;
+}
+#game-close:hover{border-color:var(--red);color:var(--red);background:rgba(255,32,64,.08)}
+
+/* ── LOADING SCREEN ── */
+#game-loading{
+  position:absolute;inset:0;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
+  z-index:2;transition:opacity .5s;
+}
+#game-loading.fade{opacity:0;pointer-events:none}
+.load-title{
+  font-family:var(--display);font-size:52px;letter-spacing:.2em;
+  color:var(--green);text-shadow:0 0 30px rgba(57,255,138,.4);
+}
+.load-bar-wrap{
+  width:280px;height:2px;background:rgba(57,255,138,.1);
+}
+.load-bar{
+  height:100%;background:var(--green);width:0%;
+  transition:width .1s linear;
+  box-shadow:0 0 8px rgba(57,255,138,.6);
+}
+.load-msg{
+  font-family:var(--mono);font-size:10px;letter-spacing:.18em;
+  color:rgba(57,255,138,.4);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(24px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes pulse{
+  0%,100%{opacity:.6} 50%{opacity:1}
+}
+.pulse{animation:pulse 2.4s ease-in-out infinite}
+
+/* Staggered scroll reveal */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease, transform .7s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:600px){
+  nav{padding:16px 20px}
+  .hero{padding:60px 20px 40px}
+  .stats{flex-wrap:wrap}
+  .stat{min-width:50%}
+  .features,.zones,.mp-section,.final-cta{padding:60px 20px}
+  footer{flex-direction:column;gap:8px;text-align:center}
+  .mp-steps{flex-direction:column}
+  .mp-arrow{transform:rotate(90deg)}
+}
+</style>
+</head>
+<body>
+
+<!-- ══ LANDING PAGE ══ -->
+<div id="landing">
+  <nav>
+    <div class="nav-logo">E2 <span>·</span> RISE OF XU</div>
+    <div class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#zones">Zones</a>
+      <a href="#multiplayer">Multiplayer</a>
+      <span class="nav-badge">v154 · LIVE</span>
+    </div>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-eyebrow pulse">⬡ AETHON · RESISTANCE COMMAND · SECURE CHANNEL ⬡</div>
+    <h1 class="hero-title">
+      EMPIRE II
+      <span class="xu">RISE OF XU</span>
+    </h1>
+    <div class="hero-sub">Isometric Action RPG</div>
+    <p class="hero-lore">
+      The <em>Xu Dominion</em> controls eleven zones. Their war machines
+      patrol the outer rim. <em>General Vorrakh</em> has occupied Aethon
+      for two decades. The Resistance needs adventurers — and you just
+      arrived at <em>XU Outpost</em>.
+    </p>
+    <div class="cta-wrap">
+      <button class="cta" onclick="launchGame()">
+        <span>ENTER AETHON</span>
+        <span class="cta-arrow">▶</span>
+      </button>
+      <div class="cta-note">NO INSTALL · NO ACCOUNT · ONE FILE · RUNS IN BROWSER</div>
+    </div>
+  </section>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n">15</div><div class="stat-l">Zones</div></div>
+    <div class="stat"><div class="stat-n">12</div><div class="stat-l">Bosses</div></div>
+    <div class="stat"><div class="stat-n">8</div><div class="stat-l">Races</div></div>
+    <div class="stat"><div class="stat-n">40+</div><div class="stat-l">Skills</div></div>
+    <div class="stat"><div class="stat-n">60+</div><div class="stat-l">Enemy Types</div></div>
+    <div class="stat"><div class="stat-n">4</div><div class="stat-l">Player Co-op</div></div>
+    <div class="stat"><div class="stat-n">100</div><div class="stat-l">Level Cap</div></div>
+  </div>
+</div>
+
+<!-- ══ FEATURES ══ -->
+<section class="features" id="features">
+  <div class="features-hdr reveal">
+    <h2>FEATURES</h2>
+    <p>EVERYTHING BUILT INTO A SINGLE HTML FILE</p>
+  </div>
+  <div class="features-grid">
+    <div class="feat reveal">
+      <span class="feat-icon">⚔</span>
+      <div class="feat-title">Real-Time Combat</div>
+      <div class="feat-desc">Mouse-aimed attacks with a full cooldown system. <strong>Combo multipliers</strong> at 3×, 6×, 10× hits. Critical strikes trigger screen shake and chromatic aberration. Every hit feels physical.</div>
+    </div>
+    <div class="feat reveal">
+      <span class="feat-icon">👑</span>
+      <div class="feat-title">Multi-Phase Bosses</div>
+      <div class="feat-desc">12 zone bosses with <strong>2–5 escalating phases</strong>. New attacks, faster speed, bigger damage at every threshold. The Lich King summons undead adds. Vaeltharax performs a resurrection at 10% HP.</div>
+    </div>
+    <div class="feat reveal">
+      <span class="feat-icon">🧬</span>
+      <div class="feat-title">8 Playable Races</div>
+      <div class="feat-desc">Xu, Human, Gnome, Ogre, Centaur, Minotaur, Elf, Vampire. Each race has <strong>unique passives</strong>, distinct 3D mesh, and its own stat spread. Combine with any of 4 classes.</div>
+    </div>
+    <div class="feat reveal">
+      <span class="feat-icon">⚡</span>
+      <div class="feat-title">4 Classes · 40+ Skills</div>
+      <div class="feat-desc"><strong>Warrior, Mage, Healer, Rogue.</strong> Each class has its own skill tree — active attacks, passives, defensive abilities, utility. Spend points on level-up to build your loadout.</div>
+    </div>
+    <div class="feat reveal">
+      <span class="feat-icon">🤝</span>
+      <div class="feat-title">P2P Multiplayer</div>
+      <div class="feat-desc">Host a room, share a 6-character code. Up to 3 friends join browser-to-browser via WebRTC. <strong>No server. No account.</strong> Host-authoritative enemy sync. Shared boss HP.</div>
+    </div>
+    <div class="feat reveal">
+      <span class="feat-icon">🤖</span>
+      <div class="feat-title">AI Companions</div>
+      <div class="feat-desc">Three AI allies follow you into every run with their own race, class, name, and <strong>pre-game lobby banter</strong>. In multiplayer, bots fill any unused player slots automatically.</div>
+    </div>
+    <div class="feat reveal">
+      <span class="feat-icon">🎒</span>
+      <div class="feat-title">Deep Loot System</div>
+      <div class="feat-desc"><strong>5 rarity tiers.</strong> 8 equipment slots. Drag-to-equip with compare tooltips. Gem socketing. 22 crafting recipes across 4 stations. Item vault storage of up to 40 items.</div>
+    </div>
+    <div class="feat reveal">
+      <span class="feat-icon">💾</span>
+      <div class="feat-title">Persistent Saves</div>
+      <div class="feat-desc">Level, stats, skill tree, equipment, vault, gold, quests, and achievements all <strong>save to localStorage</strong> on every zone transition. Your run survives browser close.</div>
+    </div>
+    <div class="feat reveal">
+      <span class="feat-icon">🎵</span>
+      <div class="feat-title">Dynamic Audio</div>
+      <div class="feat-desc">Per-zone music that <strong>crossfades on transition</strong>. Zone ambient audio — cave drips, void hum, blizzard. Full SFX: combat hits, critical crunch, boss phase stingers, monster deaths per type.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ZONES ══ -->
+<section class="zones" id="zones">
+  <div class="zones-hdr reveal">
+    <h2>THE WORLD OF AETHON</h2>
+    <p>15 ZONES · CONNECTED BY PORTALS · FIGHT YOUR WAY TO THE CAPITAL</p>
+  </div>
+  <div class="zones-grid">
+    <div class="zone-card reveal">
+      <div class="zone-tier t-hub">HUB ZONE</div>
+      <div class="zone-name">XU OUTPOST</div>
+      <div class="zone-lv">LV 1+</div>
+    </div>
+    <div class="zone-card reveal">
+      <div class="zone-tier t-undead">E2.8 · UNDEAD</div>
+      <div class="zone-name">XU CEMETERY</div>
+      <div class="zone-boss">The Lich King</div>
+      <div class="zone-lv">LV 20+</div>
+    </div>
+    <div class="zone-card reveal">
+      <div class="zone-tier t-combat">E2.5 · FRONT LINES</div>
+      <div class="zone-name">PATROL ZONE</div>
+      <div class="zone-boss">Serpent Titan MK-VII</div>
+      <div class="zone-lv">LV 5+</div>
+    </div>
+    <div class="zone-card reveal">
+      <div class="zone-tier t-combat">E3 · DIMENSION</div>
+      <div class="zone-name">VOID WASTES</div>
+      <div class="zone-boss">Void Wraith Prime</div>
+      <div class="zone-lv">LV 15+</div>
+    </div>
+    <div class="zone-card reveal">
+      <div class="zone-tier t-combat">E4 · XU CORE</div>
+      <div class="zone-name">XU CITADEL</div>
+      <div class="zone-boss">General Vorrakh</div>
+      <div class="zone-lv">LV 25+</div>
+    </div>
+    <div class="zone-card reveal">
+      <div class="zone-tier t-dungeon">DUNGEON</div>
+      <div class="zone-name">CAVES OF DESPAIR</div>
+      <div class="zone-boss">Foreman Drax</div>
+      <div class="zone-lv">LV 40+</div>
+    </div>
+    <div class="zone-card reveal">
+      <div class="zone-tier t-combat">E5 · VOLCANIC</div>
+      <div class="zone-name">ASHLANDS</div>
+      <div class="zone-boss">Inferno Colossus</div>
+      <div class="zone-lv">LV 35+</div>
+    </div>
+    <div class="zone-card reveal">
+      <div class="zone-tier t-combat">E6 · BIOLUMINESCENT</div>
+      <div class="zone-name">FUNGAL DEPTHS</div>
+      <div class="zone-boss">Mycelium Queen</div>
+      <div class="zone-lv">LV 42+</div>
+    </div>
+    <div class="zone-card reveal">
+      <div class="zone-tier t-combat">E7 · FROZEN</div>
+      <div class="zone-name">FROSTVEIL TUNDRA</div>
+      <div class="zone-boss">Frostveil Colossus</div>
+      <div class="zone-lv">LV 50+</div>
+    </div>
+    <div class="zone-card reveal">
+      <div class="zone-tier t-combat">E8 · LOST CIVILIZATION</div>
+      <div class="zone-name">ANCIENT REALM</div>
+      <div class="zone-boss">The Elder Architect</div>
+      <div class="zone-lv">LV 58+</div>
+    </div>
+    <div class="zone-card reveal">
+      <div class="zone-tier t-safe">SAFE ZONE</div>
+      <div class="zone-name">SANCTUARY OF AELUN</div>
+      <div class="zone-lv">LV 40+</div>
+    </div>
+    <div class="zone-card reveal">
+      <div class="zone-tier t-raid">RAID · LETHAL</div>
+      <div class="zone-name">DRAGON'S LAIR</div>
+      <div class="zone-boss">Vaeltharax the Undying</div>
+      <div class="zone-lv">LV 65+</div>
+    </div>
+    <div class="zone-card reveal">
+      <div class="zone-tier t-raid">E10 · DIMENSIONAL</div>
+      <div class="zone-name">RIFT VALE</div>
+      <div class="zone-boss">The Rift Sovereign</div>
+      <div class="zone-lv">LV 65+</div>
+    </div>
+    <div class="zone-card reveal">
+      <div class="zone-tier t-raid">E11.5 · WYVERN</div>
+      <div class="zone-name">WYVERN WASTES</div>
+      <div class="zone-boss">The Stonewyrm Colossus</div>
+      <div class="zone-lv">LV 80+</div>
+    </div>
+    <div class="zone-card reveal">
+      <div class="zone-tier t-raid">E11 · FINAL</div>
+      <div class="zone-name">XUMEN — XU CAPITAL</div>
+      <div class="zone-boss">The Xu Supreme Overlord</div>
+      <div class="zone-lv">LV 80+</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ MULTIPLAYER ══ -->
+<section class="mp-section" id="multiplayer">
+  <h2 class="reveal">⚡ MULTIPLAYER</h2>
+  <p class="reveal">No server. No account. No install. Just a 6-character code and a friend with a browser.</p>
+  <div class="mp-steps">
+    <div class="mp-step reveal">
+      <div class="mp-step-n">01</div>
+      <div class="mp-step-t">HOST</div>
+      <div class="mp-step-d">Click ⚡ MULTIPLAYER in the lobby. Generate a room code.</div>
+    </div>
+    <div class="mp-arrow">▶</div>
+    <div class="mp-step reveal">
+      <div class="mp-step-n">02</div>
+      <div class="mp-step-t">SHARE</div>
+      <div class="mp-step-d">Send the 6-character code to up to 3 friends.</div>
+    </div>
+    <div class="mp-arrow">▶</div>
+    <div class="mp-step reveal">
+      <div class="mp-step-n">03</div>
+      <div class="mp-step-t">CONNECT</div>
+      <div class="mp-step-d">Friends enter the code. Browser connects directly to host via WebRTC.</div>
+    </div>
+    <div class="mp-arrow">▶</div>
+    <div class="mp-step reveal">
+      <div class="mp-step-n">04</div>
+      <div class="mp-step-t">FIGHT</div>
+      <div class="mp-step-d">Shared enemies, shared boss HP. Bots fill any empty slots.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FINAL CTA ══ -->
+<section class="final-cta">
+  <h2 class="reveal">ONE FILE.<br>ONE ADVENTURE.</h2>
+  <p class="reveal">THE XU DOMINION WON'T DEFEAT ITSELF</p>
+  <div class="reveal">
+    <button class="cta" onclick="launchGame()" style="font-size:32px;padding:22px 64px">
+      <span>PLAY NOW — FREE</span>
+      <span class="cta-arrow">▶</span>
+    </button>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-l">EMPIRE II: THE RISE OF XU · v154 · AETHON-CORE</div>
+  <div class="footer-r">SINGLE HTML FILE · WEBRTC MULTIPLAYER · NO SERVERS</div>
+</footer>
+
+<!-- ══ GAME OVERLAY ══ -->
+<div id="game-overlay">
+  <div id="game-bar">
+    <div class="game-bar-logo">⬡ EMPIRE II: THE RISE OF XU · AETHON-CORE</div>
+    <button id="game-close" onclick="closeGame()">✕ EXIT TO MENU</button>
+  </div>
+  <div id="game-frame-wrap">
+    <div id="game-loading">
+      <div class="load-title">EMPIRE II</div>
+      <div class="load-bar-wrap"><div class="load-bar" id="load-bar"></div></div>
+      <div class="load-msg" id="load-msg">INITIALISING AETHON CORE...</div>
+    </div>
+    <iframe id="game-frame" src="" allowfullscreen></iframe>
+  </div>
+</div>
+
+<script>
+// ── SCROLL REVEAL ──
+const revealEls = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
+},{threshold:.12});
+revealEls.forEach(el=>obs.observe(el));
+
+// ── GAME LAUNCH ──
+const GAME_FILE = 'Empire2_RiseOfXu_154.html';
+const LOAD_MESSAGES = [
+  'INITIALISING AETHON CORE...',
+  'LOADING ZONE DEFINITIONS...',
+  'SPAWNING ENEMY POPULATIONS...',
+  'BUILDING THREE.JS MESHES...',
+  'CALIBRATING COMBAT SYSTEMS...',
+  'CONNECTING TO XU OUTPOST...',
+  'BRIEFING RESISTANCE COMMAND...',
+  'READY — ENTER AETHON',
+];
+
+function launchGame(){
+  const overlay = document.getElementById('game-overlay');
+  const frame   = document.getElementById('game-frame');
+  const bar     = document.getElementById('load-bar');
+  const msg     = document.getElementById('load-msg');
+  const loading = document.getElementById('game-loading');
+
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  // Fake load progress while iframe actually loads
+  let pct = 0, msgIdx = 0;
+  const tick = setInterval(()=>{
+    pct = Math.min(pct + (pct < 70 ? Math.random()*4+2 : Math.random()*1.5+0.5), 95);
+    bar.style.width = pct + '%';
+    const newIdx = Math.min(Math.floor(pct / 12.5), LOAD_MESSAGES.length-1);
+    if(newIdx !== msgIdx){ msgIdx = newIdx; msg.textContent = LOAD_MESSAGES[msgIdx]; }
+  }, 120);
+
+  frame.onload = ()=>{
+    clearInterval(tick);
+    bar.style.width = '100%';
+    msg.textContent = LOAD_MESSAGES[LOAD_MESSAGES.length-1];
+    setTimeout(()=>{ loading.classList.add('fade'); setTimeout(()=>{ loading.style.display='none'; },500); }, 400);
+  };
+
+  frame.src = GAME_FILE;
+}
+
+function closeGame(){
+  const overlay = document.getElementById('game-overlay');
+  const frame   = document.getElementById('game-frame');
+  const loading = document.getElementById('game-loading');
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+  // Reset loading screen for next open
+  setTimeout(()=>{
+    frame.src = '';
+    loading.style.display = 'flex';
+    loading.classList.remove('fade');
+    document.getElementById('load-bar').style.width = '0%';
+    document.getElementById('load-msg').textContent = LOAD_MESSAGES[0];
+  }, 300);
+}
+
+// ESC to close game
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape' && document.getElementById('game-overlay').classList.contains('active')){
+    // Only close if the iframe isn't using ESC itself — check focus
+    if(document.activeElement !== document.getElementById('game-frame')) closeGame();
+  }
+});
+</script>
+</body>
+</html>
